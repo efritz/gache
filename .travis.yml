@@ -1,6 +1,6 @@
 env:
   global:
-    - CC_TEST_REPORTER_ID=
+    - CC_TEST_REPORTER_ID=c0f63eb0066cffbb284331c1e201db4de16fdac07316ced0580f984109a1a2a3
 language: go
 go:
   - 1.9.x

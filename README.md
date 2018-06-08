@@ -2,8 +2,8 @@
 
 [![GoDoc](https://godoc.org/github.com/efritz/gache?status.svg)](https://godoc.org/github.com/efritz/gache)
 [![Build Status](https://secure.travis-ci.org/efritz/gache.png)](http://travis-ci.org/efritz/gache)
-[![Maintainability](https://api.codeclimate.com/v1/badges/?/maintainability)](https://codeclimate.com/github/efritz/gache/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/?/test_coverage)](https://codeclimate.com/github/efritz/gache/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/maintainability)](https://codeclimate.com/github/efritz/gache/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/test_coverage)](https://codeclimate.com/github/efritz/gache/test_coverage)
 
 WAIT A MINUTE.
 
