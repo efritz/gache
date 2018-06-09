@@ -1,44 +1,92 @@
 package gache
 
+import (
+	"container/list"
+	"sync"
+)
+
 type (
 	memoryCache struct {
-		values     map[string]string
-		tagMapping map[string][]string
+		items    *list.List
+		lookup   map[string]*list.Element
+		tags     map[string][]string
+		capacity int
+		mutex    sync.RWMutex
+	}
+
+	memoryPair struct {
+		key   string
+		value string
 	}
 )
 
-func NewMemoryCache() Cache {
-	return &memoryCache{
-		values:     map[string]string{},
-		tagMapping: map[string][]string{},
+func NewMemoryCache(configs ...MemoryConfig) Cache {
+	mc := &memoryCache{
+		items:    &list.List{},
+		lookup:   map[string]*list.Element{},
+		tags:     map[string][]string{},
+		capacity: 10000,
 	}
+
+	for _, config := range configs {
+		config(mc)
+	}
+
+	return mc
 }
 
 func (mc *memoryCache) GetValue(key string) (string, error) {
-	if value, ok := mc.values[key]; ok {
-		return value, nil
+	mc.mutex.RLock()
+	defer mc.mutex.RUnlock()
+
+	if elem, ok := mc.lookup[key]; ok {
+		mc.items.MoveToFront(elem)
+		return elem.Value.(*memoryPair).value, nil
 	}
 
 	return "", nil
 }
 
-// TODO - need to make this bounded
 func (mc *memoryCache) SetValue(key, value string, tags ...string) error {
-	mc.values[key] = value
+	mc.mutex.Lock()
+	defer mc.mutex.Unlock()
+
+	mc.remove(key)
+	mc.lookup[key] = mc.items.PushFront(&memoryPair{
+		key:   key,
+		value: value,
+	})
+
 	for _, tag := range tags {
-		mc.tagMapping[tag] = append(mc.tagMapping[tag], key)
+		mc.tags[tag] = append(mc.tags[tag], key)
+	}
+
+	if mc.items.Len() > mc.capacity {
+		mc.remove(mc.items.Back().Value.(*memoryPair).key)
 	}
 
 	return nil
 }
 
 func (mc *memoryCache) BustTags(tags ...string) error {
+	mc.mutex.Lock()
+	defer mc.mutex.Unlock()
+
 	for _, tag := range tags {
-		for _, key := range mc.tagMapping[tag] {
-			delete(mc.values, key)
+		for _, key := range mc.tags[tag] {
+			mc.remove(key)
 		}
 
-		delete(mc.tagMapping, tag)
+		delete(mc.tags, tag)
+	}
+
+	return nil
+}
+
+func (mc *memoryCache) remove(key string) error {
+	if elem, ok := mc.lookup[key]; ok {
+		mc.items.Remove(elem)
+		delete(mc.lookup, key)
 	}
 
 	return nil
