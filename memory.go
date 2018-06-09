@@ -68,6 +68,13 @@ func (mc *memoryCache) SetValue(key, value string, tags ...string) error {
 	return nil
 }
 
+func (mc *memoryCache) Remove(key string) error {
+	mc.mutex.Lock()
+	defer mc.mutex.Unlock()
+
+	return mc.remove(key)
+}
+
 func (mc *memoryCache) BustTags(tags ...string) error {
 	mc.mutex.Lock()
 	defer mc.mutex.Unlock()
