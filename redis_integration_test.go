@@ -5,7 +5,6 @@ package gache
 import (
 	"github.com/aphistic/sweet"
 	"github.com/efritz/deepjoy"
-
 	. "github.com/onsi/gomega"
 )
 
@@ -45,7 +44,13 @@ func (s *RedisIntegrationSuite) TestOverwriteKey(t sweet.T) {
 	Expect(v1).To(Equal("v3"))
 }
 
-// TODO - test remove
+func (s *RedisIntegrationSuite) TestRemove(t sweet.T) {
+	c := NewRedisCache(makeTestClient())
+	Expect(c.SetValue("k1", "v1")).To(BeNil())
+	Expect(c.GetValue("k1")).To(Equal("v1"))
+	Expect(c.Remove("k1"))
+	Expect(c.GetValue("k4")).To(Equal(""))
+}
 
 func (s *RedisIntegrationSuite) TestBustTags(t sweet.T) {
 	c := NewRedisCache(makeTestClient())

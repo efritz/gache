@@ -30,7 +30,13 @@ func (s *MemorySuite) TestOverwriteKey(t sweet.T) {
 	Expect(v1).To(Equal("v3"))
 }
 
-// TODO - test remove
+func (s *MemorySuite) TestRemove(t sweet.T) {
+	c := NewMemoryCache()
+	Expect(c.SetValue("k1", "v1")).To(BeNil())
+	Expect(c.GetValue("k1")).To(Equal("v1"))
+	Expect(c.Remove("k1"))
+	Expect(c.GetValue("k4")).To(Equal(""))
+}
 
 func (s *MemorySuite) TestBustTags(t sweet.T) {
 	c := NewMemoryCache()
