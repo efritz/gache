@@ -15,6 +15,7 @@ type (
 	}
 )
 
+// NewRedisCache creates a Cache instance using a local memory backend.
 func NewRedisCache(client deepjoy.Client, configs ...RedisConfig) Cache {
 	rc := &redisCache{
 		client: client,
@@ -28,6 +29,9 @@ func NewRedisCache(client deepjoy.Client, configs ...RedisConfig) Cache {
 	return rc
 }
 
+// GetValue retrieves a value associated with a key from
+// Redis. The read replica will be queried for this method
+// only if the deepjoy Client is configured to do so.
 func (rc *redisCache) GetValue(key string) (string, error) {
 	val, err := rc.client.ReadReplica().Do("GET", rc.makeKey(key))
 	if err == nil && val == nil {
@@ -37,6 +41,7 @@ func (rc *redisCache) GetValue(key string) (string, error) {
 	return redis.String(val, err)
 }
 
+// SetValue associates a key with a value in Redis.
 func (rc *redisCache) SetValue(key, value string, tags ...string) error {
 	args := []interface{}{}
 	args = append(args, setScript)
@@ -50,11 +55,14 @@ func (rc *redisCache) SetValue(key, value string, tags ...string) error {
 	return err
 }
 
+// Remove removes a value from Redis.
 func (rc *redisCache) Remove(key string) error {
 	_, err := rc.client.Do("DEL", rc.makeKey(key))
 	return err
 }
 
+// BustTags removes all keys associated with the given tags
+// from Redis.
 func (rc *redisCache) BustTags(tags ...string) error {
 	args := []interface{}{}
 	args = append(args, bustScript)

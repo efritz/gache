@@ -20,6 +20,7 @@ type (
 	}
 )
 
+// NewMemoryCache creates a Cache instance using a local memory backend.
 func NewMemoryCache(configs ...MemoryConfig) Cache {
 	mc := &memoryCache{
 		items:    &list.List{},
@@ -35,6 +36,9 @@ func NewMemoryCache(configs ...MemoryConfig) Cache {
 	return mc
 }
 
+// GetValue retrieves a value associated with a key from
+// memory. Accessing a key which exists will move it to the
+// front of the access list.
 func (mc *memoryCache) GetValue(key string) (string, error) {
 	mc.mutex.RLock()
 	defer mc.mutex.RUnlock()
@@ -47,6 +51,9 @@ func (mc *memoryCache) GetValue(key string) (string, error) {
 	return "", nil
 }
 
+// SetValue associates a key with a value in memory. If the
+// insertion of an item pushes the cache over capacity, the
+// key that has been accessed the least recently is removed.
 func (mc *memoryCache) SetValue(key, value string, tags ...string) error {
 	mc.mutex.Lock()
 	defer mc.mutex.Unlock()
@@ -68,6 +75,7 @@ func (mc *memoryCache) SetValue(key, value string, tags ...string) error {
 	return nil
 }
 
+// Remove removes a value from memory.
 func (mc *memoryCache) Remove(key string) error {
 	mc.mutex.Lock()
 	defer mc.mutex.Unlock()
@@ -75,6 +83,8 @@ func (mc *memoryCache) Remove(key string) error {
 	return mc.remove(key)
 }
 
+// BustTags removes all keys associated with the given tags
+// from memory.
 func (mc *memoryCache) BustTags(tags ...string) error {
 	mc.mutex.Lock()
 	defer mc.mutex.Unlock()
