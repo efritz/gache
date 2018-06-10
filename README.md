@@ -5,7 +5,36 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/maintainability)](https://codeclimate.com/github/efritz/gache/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/test_coverage)](https://codeclimate.com/github/efritz/gache/test_coverage)
 
-WAIT A MINUTE.
+A simple Golang cache interface.
+
+## Overview
+
+A cache instance can be configured to store items in memory or in Redis.
+Use the `NewMemoryCache` or `NewRedisCache` to create an instance of the
+cache.
+
+```go
+// Store a value in the cache with the tag `products`
+if err := cache.SetValue("product-123", "...", "products"); err != nil {
+    // ...
+}
+
+// Retrieve the value by key from the cache
+val, err := cache.GetValue("product-123")
+if err != nil {
+    // ...
+}
+
+// Process the value if it exists
+if val != "" {
+    // ...
+}
+
+// Remove all keys with the tag `products` after a change to the
+// data which backs that set of cache keys.
+cache.BustTags("products")
+
+```
 
 ## License
 
