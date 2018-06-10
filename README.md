@@ -32,8 +32,9 @@ if val != "" {
 
 // Remove all keys with the tag `products` after a change to the
 // data which backs that set of cache keys.
-cache.BustTags("products")
-
+if err := cache.BustTags("products"); err != nil {
+    // ...
+}
 ```
 
 ## License
