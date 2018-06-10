@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/maintainability)](https://codeclimate.com/github/efritz/gache/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1b4448cb4f5672631beb/test_coverage)](https://codeclimate.com/github/efritz/gache/test_coverage)
 
-A simple Golang cache interface.
+A simple cache interface for Go applications.
 
 ## Overview
 
