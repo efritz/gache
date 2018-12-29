@@ -10,6 +10,8 @@ go:
   - tip
 install: go mod vendor
 script: go test -mod vendor -tags=integration -coverprofile=c.out -covermode=atomic
+services:
+  - redis-server
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
